@@ -84,7 +84,7 @@ export const CheckInScreen: React.FC<CheckInScreenProps> = ({
                 if (validationError) setValidationError(null);
               }}
               placeholder="e.g. I've been debugging for two hours, I'm frustrated, and my shoulders feel tense."
-              className="w-full p-3.5 bg-canvas border border-line-strong rounded-sm text-ink-strong text-sm placeholder:text-subtle focus:bg-surface focus:border-forest resize-none leading-relaxed"
+              className="w-full p-3.5 bg-canvas border border-line-strong rounded-sm text-ink-strong text-sm placeholder:text-subtle focus:bg-surface focus:border-accent resize-none leading-relaxed"
             />
             {validationError && (
               <p className="text-xs text-error font-medium" role="alert">
@@ -105,7 +105,7 @@ export const CheckInScreen: React.FC<CheckInScreenProps> = ({
                     setCheckInText(prompt.text);
                     setValidationError(null);
                   }}
-                  className="min-h-10 text-xs px-2.5 py-2 bg-sage hover:bg-sage-hover text-muted rounded-sm"
+                  className="min-h-10 text-xs px-2.5 py-2 bg-tint hover:bg-tint-hover text-muted rounded-sm"
                 >
                   {prompt.label}
                 </button>
@@ -116,7 +116,7 @@ export const CheckInScreen: React.FC<CheckInScreenProps> = ({
           <div className="pt-2 border-t border-line grid grid-cols-1 sm:grid-cols-2 gap-5">
             <fieldset className="space-y-2">
               <legend className="lo-kicker">Environment</legend>
-              <div className="grid grid-cols-3 gap-1.5 p-1 bg-sage rounded-sm">
+              <div className="grid grid-cols-3 gap-1.5 p-1 bg-tint rounded-sm">
                 {(['either', 'outdoors', 'indoors'] as EnvironmentPreference[]).map((opt) => (
                   <button
                     key={opt}
@@ -138,7 +138,7 @@ export const CheckInScreen: React.FC<CheckInScreenProps> = ({
 
             <fieldset className="space-y-2">
               <legend className="lo-kicker">Activity</legend>
-              <div className="grid grid-cols-2 gap-1.5 p-1 bg-sage rounded-sm">
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-tint rounded-sm">
                 {(
                   [
                     { id: 'any', label: 'Any' },

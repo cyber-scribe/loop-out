@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <rect width="48" height="48" rx="15" fill="#4C587E"/>
+  <circle
+    cx="24"
+    cy="24"
+    r="16"
+    fill="none"
+    stroke="#FAF8F5"
+    stroke-width="2.7"
+    stroke-linecap="round"
+    stroke-dasharray="76 25"
+    transform="rotate(-35 24 24)"
+  />
+  <path
+    d="M21 19v10m6-10v10"
+    fill="none"
+    stroke="#FAF8F5"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+</svg>

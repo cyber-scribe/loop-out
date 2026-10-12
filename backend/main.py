@@ -61,7 +61,8 @@ async def generate_reset(request: ResetRequest):
         return get_fallback_reset(
             environment_preference=request.environment_preference,
             activity_preference=request.activity_preference,
-            user_context=request.check_in
+            user_context=request.check_in,
+            excluded_activity_titles=request.excluded_activity_titles,
         )
 
 if __name__ == "__main__":

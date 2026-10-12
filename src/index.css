@@ -4,27 +4,51 @@
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --color-canvas: #faf8f5;
-  --color-surface: #fffdf9;
-  --color-ink: #1c2822;
-  --color-ink-strong: #172e22;
-  --color-muted: #4a5c50;
-  --color-subtle: #5f7165;
-  --color-line: #e5e0d6;
-  --color-line-strong: #dcd7cb;
-  --color-sage: #edf0ea;
-  --color-sage-hover: #e3e8e0;
-  --color-forest: #1b3527;
-  --color-forest-deep: #14281e;
-  --color-forest-disabled: #85988b;
-  --color-error: #9d382b;
-  --color-error-bg: #faeceb;
-  --color-error-line: #f0c5c2;
-  --color-highlight: #d8e2dc;
+  --color-canvas: #171923;
+  --color-surface: #20232e;
+  --color-ink: #e8e9ef;
+  --color-ink-strong: #f6f5f2;
+  --color-muted: #bec0ca;
+  --color-subtle: #a3a6b5;
+  --color-line: #373a48;
+  --color-line-strong: #4a4e60;
+  --color-tint: #292d3a;
+  --color-tint-hover: #34394a;
+  --color-accent: #aab6e4;
+  --color-accent-hover: #bfcaef;
+  --color-accent-disabled: #59617e;
+  --color-instruction: #292d3a;
+  --color-instruction-border: #59617e;
+  --color-error: #ffb4a9;
+  --color-error-bg: #35221f;
+  --color-error-line: #713c36;
+  --color-highlight: #3b4053;
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
+}
+
+[data-theme='light'] {
+  --color-canvas: #faf8f5;
+  --color-surface: #fffdf9;
+  --color-ink: #292b35;
+  --color-ink-strong: #292c3b;
+  --color-muted: #565a68;
+  --color-subtle: #6c7080;
+  --color-line: #e6e1db;
+  --color-line-strong: #d9d2ca;
+  --color-tint: #f0eff3;
+  --color-tint-hover: #e7e6ed;
+  --color-accent: #4c587e;
+  --color-accent-hover: #3f496c;
+  --color-accent-disabled: #999bad;
+  --color-instruction: #f1f2f8;
+  --color-instruction-border: #c8cde1;
+  --color-error: #9d382b;
+  --color-error-bg: #faeceb;
+  --color-error-line: #f0c5c2;
+  --color-highlight: #dde0ec;
 }
 
 @layer base {
@@ -51,7 +75,7 @@ textarea {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-forest);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
@@ -80,14 +104,24 @@ textarea {
   }
 
   .lo-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 w-full min-h-11 py-3 px-6 bg-forest hover:bg-forest-deep disabled:bg-forest-disabled text-canvas font-medium text-sm rounded-sm cursor-pointer disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 w-full min-h-11 py-3 px-6 bg-accent hover:bg-accent-hover disabled:bg-accent-disabled text-canvas font-medium text-sm rounded-sm cursor-pointer disabled:cursor-not-allowed;
   }
 
   .lo-btn-secondary {
-    @apply inline-flex items-center justify-center w-full min-h-11 py-2.5 px-4 text-sm font-medium text-muted hover:text-ink-strong hover:bg-sage rounded-sm cursor-pointer disabled:opacity-50;
+    @apply inline-flex items-center justify-center w-full min-h-11 py-2.5 px-4 text-sm font-medium text-muted hover:text-ink-strong hover:bg-tint rounded-sm cursor-pointer disabled:opacity-50;
   }
 
   .lo-choice {
-    @apply w-full text-left p-4 bg-canvas hover:bg-sage border border-line rounded-sm cursor-pointer;
+    @apply w-full text-left p-4 bg-canvas hover:bg-tint border border-line rounded-sm cursor-pointer;
+  }
+
+  .lo-instruction {
+    background-color: var(--color-instruction);
+    border-color: var(--color-instruction-border);
+    border-left-width: 4px;
+  }
+
+  .lo-instruction-list li::marker {
+    color: var(--color-accent);
   }
 }

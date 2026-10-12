@@ -1,55 +1,55 @@
 # LoopOut
 
-LoopOut helps you step away from screens with one personalized, five-minute offline activity when you feel overwhelmed.
+LoopOut helps people step away from screens with one personalized, five-minute offline activity. Share how a screen session feels, choose an environment or activity preference if useful, then take a short break without a timer, account, or streak.
 
-Describe how you feel, optionally choose an environment or activity type, then put the device down. There are no accounts, streaks, or timers.
+## What it does
 
-## Stack
+- Collects a short check-in and optional environment and activity preferences.
+- Suggests one practical offline activity in Nature, Gentle Movement, or Sensory Grounding.
+- Uses the Groq OpenAI-compatible API when configured, with curated local activities available as a fallback.
+- Supports the check-in → activity → step-away → return flow, including options to continue, take another break, or finish.
+- Does not create user accounts or persist check-in history.
 
-- Frontend: React, Vite, TypeScript, Tailwind CSS
-- Backend: FastAPI
-- AI: open-weight model via Groq’s OpenAI-compatible API (`AI_API_BASE_URL`, default Groq)
+LoopOut is a wellness aid for everyday screen breaks, not a medical or mental-health service.
 
-If `AI_API_KEY` is empty, LoopOut uses curated fallback activities.
+## Architecture
 
-## Run locally
-
-**Prerequisites:** Node.js 20.19+ (or 22.12+) and Python 3.10+
-
-1. Install frontend dependencies:
-
-   ```bash
-   npm install
-   ```
-
-2. Install backend dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Copy `.env.example` to `.env` and set `AI_API_KEY` if you want live AI suggestions. Leave it empty to use fallback activities.
-
-4. Start the app (Vite frontend plus FastAPI via the Node server):
-
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000).
-
-You can also run the API on its own:
-
-```bash
-uvicorn backend.main:app --reload --port 8000
+```mermaid
+flowchart LR
+    Browser[React + Vite UI] -->|same-origin /api| Express[Node.js + Express]
+    Express -->|health and activity requests| FastAPI[FastAPI]
+    FastAPI -->|AI_API_KEY configured| Groq[Groq chat completions API]
+    FastAPI -->|key missing or provider failure| Fallback[Curated local activities]
 ```
 
-## Tests and build
+- **Frontend:** React, TypeScript, Vite, and Tailwind CSS. The browser calls the app's `/api` routes; it never calls the AI provider directly.
+- **Web server:** Express starts FastAPI, waits for its health endpoint, proxies `/api` requests, and serves Vite middleware during development or the built `dist/` files in production.
+- **Backend:** FastAPI validates requests and response data. The AI service uses the configured OpenAI-compatible endpoint and returns a curated fallback when the key is missing or a provider request fails.
+- **Configuration:** Both Node and Python load the root `.env` file. `AI_API_KEY` is server-side only and must never be renamed to a `VITE_` variable.
 
-```bash
-npm run build
-npm run lint
-pytest backend/tests/
+### Request flow
+
+```text
+Check-in form → POST /api/generate-reset → FastAPI → AI or fallback → activity screen
+```
+## Use cases
+
+- Taking a short pause after a long coding, writing, or study session.
+- Choosing a gentle offline activity after meetings or notification-heavy work.
+- Finding an indoor-friendly reset when going outside is inconvenient.
+- Getting a simple sensory or movement break when a user is unsure what to do next.
+
+## Repository layout
+
+```text
+backend/                 FastAPI app, AI service, prompts, schemas, fallbacks, and tests
+public/favicon.svg       LoopOut app icon
+src/                     React app, screens, API client, and styles
+.env.example             Safe configuration template
+package.json             Frontend/server scripts and npm dependencies
+package-lock.json        Reproducible npm dependency lockfile
+requirements.txt         Python dependencies
+server.ts                Express server and FastAPI process orchestration
 ```
 
-On Windows, if `python3` is not available, start FastAPI with `python -m uvicorn` as in the command above.
+LoopOut is distributed under the [MIT License](./LICENSE).

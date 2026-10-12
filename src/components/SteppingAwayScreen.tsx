@@ -1,5 +1,5 @@
 import React from 'react';
-import { LeafMark } from './LeafMark';
+import { LoopOutMark } from './LoopOutMark';
 
 interface SteppingAwayScreenProps {
   activityTitle: string;
@@ -14,7 +14,7 @@ export const SteppingAwayScreen: React.FC<SteppingAwayScreenProps> = ({
     <div className="lo-page text-center">
       <div className="lo-card space-y-7">
         <div className="flex justify-center">
-          <LeafMark size="lg" />
+          <LoopOutMark size="lg" />
         </div>
 
         <div className="space-y-3">

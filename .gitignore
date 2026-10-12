@@ -1,24 +1,24 @@
-# Dependencies
+# Node.js
 node_modules/
-**/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 venv/
 .venv/
-env/
+.pytest_cache/
 
-# Build output
-build/
+# Vite and TypeScript build output
 dist/
-coverage/
-.next/
-out/
+.vite/
+*.tsbuildinfo
 
-# Environment variables and secrets
+# Environment files and credentials
 .env
 .env.*
 !.env.example
 !.env.*.example
-
-# Local authentication files
 .npmrc
 .pypirc
 .netrc
@@ -30,22 +30,8 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-# Python cache and test files
-__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-htmlcov/
-
-# Frontend tooling
-.vite/
-*.tsbuildinfo
-
 # IDE and editor
 .vscode/
-.idea/
 *.swp
 *.swo
 
@@ -54,23 +40,14 @@ htmlcov/
 Thumbs.db
 Desktop.ini
 
-# Temporary files
-*.tmp
-*.temp
-*.bak
-
-# Local databases
-*.sqlite3
-*.db
-
 # Secrets and credentials
-secrets/
-credentials.json
-credentials.*
 *.credentials
 *.secret
 *.secrets
 *.token
+credentials.*
+credentials.json
+secrets/
 service-account*.json
 *-service-account*.json
 firebase-adminsdk*.json
@@ -80,9 +57,5 @@ firebase-adminsdk*.json
 *.key
 *.p12
 *.pfx
-*.jks
-*.keystore
 id_rsa
-id_rsa.*
 id_ed25519
-id_ed25519.*

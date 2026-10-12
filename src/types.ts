@@ -6,6 +6,7 @@ export interface ResetRequest {
   check_in: string;
   environment_preference: EnvironmentPreference;
   activity_preference: ActivityPreference;
+  excluded_activity_titles?: string[];
 }
 
 export interface ResetResponse {
@@ -27,3 +28,5 @@ export interface HealthResponse {
 export type ScreenState = 'checkin' | 'reset' | 'stepping_away' | 'return';
 
 export type ReturnChoice = 'ready_to_continue' | 'need_another_break' | 'done_for_now';
+
+export type ThemeMode = 'dark' | 'light';

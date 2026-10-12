@@ -3,12 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('loopout-theme');
+        document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+      } catch {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
+    <meta name="theme-color" content="#171923" />
     <title>LoopOut — Step out of the loop</title>
     <meta name="description" content="LoopOut suggests one personalized, five-minute offline activity when you feel overwhelmed by screens." />
     <meta property="og:title" content="LoopOut — Step out of the loop" />
     <meta property="og:description" content="LoopOut suggests one personalized, five-minute offline activity when you feel overwhelmed by screens." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">

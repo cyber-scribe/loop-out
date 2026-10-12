@@ -15,6 +15,10 @@ export const ResetScreen: React.FC<ResetScreenProps> = ({
   isLoadingAnother,
 }) => {
   const duration = reset.duration_minutes || 5;
+  const instructionSteps = reset.instruction
+    .split(/\r?\n/)
+    .map((step) => step.replace(/^\s*[-*•]\s*/, '').trim())
+    .filter(Boolean);
 
   return (
     <div className="lo-page">
@@ -35,10 +39,19 @@ export const ResetScreen: React.FC<ResetScreenProps> = ({
       </div>
 
       <div className="lo-card space-y-6">
-        <div className="space-y-2">
-          <h2 className="lo-kicker">Instructions</h2>
-          <p className="text-base sm:text-lg text-ink-strong leading-relaxed">{reset.instruction}</p>
-        </div>
+        <section
+          className="lo-instruction rounded-md border p-5 sm:p-6"
+          aria-labelledby="activity-steps-title"
+        >
+          <h2 id="activity-steps-title" className="lo-kicker mb-4">
+            Your steps
+          </h2>
+          <ul className="lo-instruction-list list-disc pl-5 space-y-3 text-base sm:text-lg font-medium leading-relaxed">
+            {instructionSteps.map((step, index) => (
+              <li key={`${index}-${step}`}>{step}</li>
+            ))}
+          </ul>
+        </section>
 
         <div className="pt-5 border-t border-line space-y-2">
           <h3 className="lo-kicker">Why this fits</h3>

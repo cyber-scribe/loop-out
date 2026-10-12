@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
 EnvironmentPreference = Literal["outdoors", "indoors", "either"]
@@ -18,6 +18,11 @@ class ResetRequest(BaseModel):
     activity_preference: ActivityPreference = Field(
         default="any",
         description="Preferred type of activity"
+    )
+    excluded_activity_titles: List[str] = Field(
+        default_factory=list,
+        max_length=20,
+        description="Activity titles already suggested during this check-in"
     )
 
 class ResetResponse(BaseModel):

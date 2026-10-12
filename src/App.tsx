@@ -1,26 +1,23 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CheckInScreen } from './components/CheckInScreen';
 import { ResetScreen } from './components/ResetScreen';
 import { SteppingAwayScreen } from './components/SteppingAwayScreen';
 import { ReturnScreen } from './components/ReturnScreen';
-import { AboutModal } from './components/AboutModal';
-import { ResetRequest, ResetResponse, ScreenState, HealthResponse } from './types';
+import { ResetRequest, ResetResponse, ScreenState, HealthResponse, ThemeMode } from './types';
 import { generateReset, checkHealth } from './api';
 
 export default function App() {
   const [screen, setScreen] = useState<ScreenState>('checkin');
   const [lastRequest, setLastRequest] = useState<ResetRequest | null>(null);
   const [currentReset, setCurrentReset] = useState<ResetResponse | null>(null);
+  const [shownActivityTitles, setShownActivityTitles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [backendHealth, setBackendHealth] = useState<HealthResponse | null>(null);
+  const [theme, setTheme] = useState<ThemeMode>(() =>
+    document.documentElement.dataset.theme === 'light' ? 'light' : 'dark',
+  );
 
   useEffect(() => {
     checkHealth()
@@ -30,14 +27,29 @@ export default function App() {
       });
   }, []);
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute(
+      'content',
+      theme === 'dark' ? '#171923' : '#faf8f5',
+    );
+    try {
+      localStorage.setItem('loopout-theme', theme);
+    } catch {
+      // Theme still works for this visit when storage is unavailable.
+    }
+  }, [theme]);
+
   const handleCheckInSubmit = async (req: ResetRequest) => {
     setIsLoading(true);
     setErrorMessage(null);
     setLastRequest(req);
+    setShownActivityTitles([]);
 
     try {
       const reset = await generateReset(req);
       setCurrentReset(reset);
+      setShownActivityTitles([reset.activity_title]);
       setScreen('reset');
     } catch (err: unknown) {
       const message =
@@ -58,8 +70,20 @@ export default function App() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      const reset = await generateReset(lastRequest);
+      const excludedActivityTitles = Array.from(
+        new Set([
+          ...shownActivityTitles,
+          ...(currentReset ? [currentReset.activity_title] : []),
+        ]),
+      ).slice(-20);
+      const reset = await generateReset({
+        ...lastRequest,
+        excluded_activity_titles: excludedActivityTitles,
+      });
       setCurrentReset(reset);
+      setShownActivityTitles((shown) =>
+        Array.from(new Set([...shown, ...excludedActivityTitles, reset.activity_title])).slice(-20),
+      );
       return true;
     } catch (err: unknown) {
       const message =
@@ -82,6 +106,7 @@ export default function App() {
   const handleStartFresh = () => {
     setCurrentReset(null);
     setLastRequest(null);
+    setShownActivityTitles([]);
     setErrorMessage(null);
     setScreen('checkin');
   };
@@ -98,8 +123,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col justify-between selection:bg-highlight selection:text-ink-strong">
       <Header
-        onOpenAbout={() => setAboutOpen(true)}
         onResetSession={handleStartFresh}
+        theme={theme}
+        onToggleTheme={() => setTheme((current) => current === 'dark' ? 'light' : 'dark')}
       />
 
       <main className="flex-1 flex flex-col justify-center">
@@ -136,8 +162,6 @@ export default function App() {
           />
         )}
       </main>
-
-      <AboutModal isOpen={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   );
 }

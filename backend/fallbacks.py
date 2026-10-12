@@ -4,59 +4,59 @@ from backend.schemas import ResetResponse, EnvironmentPreference, ActivityPrefer
 
 FALLBACK_ACTIVITIES: List[ResetResponse] = [
     ResetResponse(
-        activity_title="The Distant Horizon Scan",
+        activity_title="Rest your eyes",
         duration_minutes=5,
         category="Nature",
-        instruction="Step to the nearest window or outdoors. Find the furthest object on the horizon—a tree line, rooftop, or cloud edge. Soften your gaze and rest your eyes on it for five slow, unhurried breaths without squinting.",
-        reason="Shifting from close-range screen focus to distant optical infinity relieves eye muscle tension and broadens your field of awareness.",
-        indoor_alternative="Look down the longest hallway or room in your space, resting your eyes on the farthest wall or piece of art."
+        instruction="- Settle somewhere comfortable near a window or outdoors if safe.\n- Rest your eyes on a distant object.\n- Look away whenever you like.",
+        reason="Looking at a distant view changes your visual focus from nearby screen work. Brief distance breaks are a practical eye-rest strategy; this specific activity is not a treatment.",
+        indoor_alternative="Look toward the far end of your room or a distant object through a window."
     ),
     ResetResponse(
-        activity_title="Palm & Solid Surface Grounding",
+        activity_title="Notice one texture",
         duration_minutes=5,
         category="Sensory Grounding",
-        instruction="Place both palms completely flat against a cool, sturdy surface—a wooden tabletop, windowsill, or tiled floor. Feel the firmness and temperature beneath your skin. Notice your contact points for two minutes without rushing.",
-        reason="Physical tactile contact with a stable, cool surface anchors attention back into immediate physical reality.",
+        instruction="- Rest one hand on a familiar nearby surface.\n- Notice its texture.\n- Move your hand whenever you like.",
+        reason="Focusing on a familiar texture gives your attention a concrete sensory detail. This is a grounding-style activity, though evidence for this exact exercise is limited.",
         indoor_alternative=None
     ),
     ResetResponse(
-        activity_title="Shoulder Roll & Spine Decompression",
+        activity_title="Easy shoulder rolls",
         duration_minutes=5,
         category="Gentle Movement",
-        instruction="Stand up slowly. Roll both shoulders backwards four times in large, gentle circles, then let them drop completely. Clasp your hands loosely behind your lower back, draw your shoulder blades gently together, and take three full, comfortable breaths.",
-        reason="Physical desk work compresses the anterior chest and tightens upper trapezius muscles; this reverses postural slouching.",
+        instruction="- Let your shoulders relax.\n- Roll them gently in a small circle.\n- Stop if it feels uncomfortable.",
+        reason="Gentle shoulder movement offers a low-effort change from staying still. Keep it comfortable; it is not a treatment for pain or tension.",
         indoor_alternative=None
     ),
     ResetResponse(
-        activity_title="Cool Water Sensation & Forearm Rinse",
+        activity_title="A cool-water pause",
         duration_minutes=5,
         category="Sensory Grounding",
-        instruction="Walk to the nearest sink. Run cool tap water over your wrists and hands for thirty seconds. Pay full attention to the sensation of water running over your skin, then dry your hands slowly with a textured towel.",
-        reason="Cool temperature exposure to the pulse points on your wrists provides an immediate, gentle tactile stimulus that interrupts rumination.",
+        instruction="- Rinse your hands with comfortable, cool or room-temperature water.\n- Dry your hands.\n- Skip this if water feels inconvenient or uncomfortable.",
+        reason="Noticing water's temperature gives you a concrete sensation to focus on. The specific benefits of a brief hand rinse are not well established.",
         indoor_alternative=None
     ),
     ResetResponse(
-        activity_title="Fresh Air & Ambient Sound Listening",
+        activity_title="Listen for a few sounds",
         duration_minutes=5,
         category="Nature",
-        instruction="Step outside onto a porch, balcony, or open a window fully. Close your eyes for just thirty seconds and identify three natural or non-digital sounds (wind, birds, distant rustling). Then open your eyes and take three quiet breaths of fresh air.",
-        reason="Natural ambient acoustic variation reduces cognitive fatigue caused by continuous digital notifications and keyboard clatter.",
-        indoor_alternative="Open a window a few inches to let fresh air circulate, and listen to the outdoor environment while staying warm."
+        instruction="- Stay comfortably indoors or near a window.\n- Listen for a few nearby sounds.\n- Notice one sound without naming it.",
+        reason="Listening directs attention toward sounds in your surroundings. This is a simple present-moment exercise, not a proven treatment for stress.",
+        indoor_alternative="Listen from inside near a window; there is no need to open it or go outside."
     ),
     ResetResponse(
-        activity_title="Barefoot Floor Contact & Slow Pacing",
+        activity_title="Feel your feet on the floor",
         duration_minutes=5,
         category="Gentle Movement",
-        instruction="Slip off your shoes. Take ten slow, deliberate steps across your room or floor, feeling each part of your foot—heel, arch, ball, toes—connect with the ground. Turn around and repeat twice at a relaxed pace.",
-        reason="Slow, deliberate walking activates proprioceptors in your feet and shifts neurological processing away from mental loops.",
+        instruction="- Sit or stand somewhere comfortable.\n- Notice where your feet meet the floor.\n- Shift your weight gently if comfortable.",
+        reason="Noticing your feet gives attention a concrete point of contact with the floor. This grounding-style use is a practical rationale, not proof of a specific outcome.",
         indoor_alternative=None
     ),
     ResetResponse(
-        activity_title="Three Natural Textures Observation",
+        activity_title="Find three different textures",
         duration_minutes=5,
         category="Sensory Grounding",
-        instruction="Find three physical items near you with contrasting textures—such as a plant leaf, a coarse fabric, and a smooth stone or ceramic mug. Spend one minute examining each, feeling the ridge, weave, or polish.",
-        reason="Intentional tactile exploration engages sensory nerve endings and breaks the tunnel vision of screen staring.",
+        instruction="- Choose up to three familiar, safe objects nearby.\n- Notice how each one feels.",
+        reason="Comparing familiar textures gives attention concrete sensory details to notice. This is a practical grounding-style activity; evidence for this exact exercise is limited.",
         indoor_alternative=None
     )
 ]
@@ -64,7 +64,8 @@ FALLBACK_ACTIVITIES: List[ResetResponse] = [
 def get_fallback_reset(
     environment_preference: EnvironmentPreference = "either",
     activity_preference: ActivityPreference = "any",
-    user_context: str = ""
+    user_context: str = "",
+    excluded_activity_titles: Optional[List[str]] = None,
 ) -> ResetResponse:
     candidates = FALLBACK_ACTIVITIES.copy()
 
@@ -85,15 +86,32 @@ def get_fallback_reset(
         if indoor_suitable:
             candidates = indoor_suitable
 
+    excluded = {title.strip().casefold() for title in excluded_activity_titles or []}
+    unseen = [c for c in candidates if c.activity_title.strip().casefold() not in excluded]
+    if not unseen and excluded:
+        # If a narrow preference has exhausted its curated options, offer any
+        # unseen activity that still fits the selected environment.
+        unseen = [
+            c for c in FALLBACK_ACTIVITIES
+            if c.activity_title.strip().casefold() not in excluded
+            and (
+                environment_preference != "indoors"
+                or c.indoor_alternative is not None
+                or c.category in ["Gentle Movement", "Sensory Grounding"]
+            )
+        ]
+    if unseen:
+        candidates = unseen
+
     # If user mentions specific physical areas like shoulders, neck, eyes
     ctx_lower = user_context.lower()
     if any(k in ctx_lower for k in ["shoulder", "neck", "back", "tense", "stiff", "sit", "sitting"]):
         movement = [c for c in candidates if c.category == "Gentle Movement"]
         if movement:
-            return movement[0]
+            candidates = movement
     elif any(k in ctx_lower for k in ["eye", "headache", "stare", "screen", "blur"]):
-        eye_resets = [c for c in candidates if "Horizon" in c.activity_title or c.category == "Nature"]
+        eye_resets = [c for c in candidates if "Rest your eyes" in c.activity_title or c.category == "Nature"]
         if eye_resets:
-            return eye_resets[0]
+            candidates = eye_resets
 
     return random.choice(candidates)
