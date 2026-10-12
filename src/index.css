@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --color-canvas: #faf8f5;
+  --color-surface: #fffdf9;
+  --color-ink: #1c2822;
+  --color-ink-strong: #172e22;
+  --color-muted: #4a5c50;
+  --color-subtle: #5f7165;
+  --color-line: #e5e0d6;
+  --color-line-strong: #dcd7cb;
+  --color-sage: #edf0ea;
+  --color-sage-hover: #e3e8e0;
+  --color-forest: #1b3527;
+  --color-forest-deep: #14281e;
+  --color-forest-disabled: #85988b;
+  --color-error: #9d382b;
+  --color-error-bg: #faeceb;
+  --color-error-line: #f0c5c2;
+  --color-highlight: #d8e2dc;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+  }
+
+  h1,
+  h2,
+  .font-editorial {
+    font-family: var(--font-display);
+  }
+}
+
+button,
+a,
+input,
+textarea {
+  transition-property: color, background-color, border-color, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
+}
+
+@layer components {
+  .lo-page {
+    @apply w-full max-w-2xl mx-auto py-8 sm:py-12 px-4 sm:px-6;
+  }
+
+  .lo-card {
+    @apply bg-surface border border-line rounded-md p-6 sm:p-8;
+    box-shadow:
+      0 1px 2px rgba(23, 46, 34, 0.04),
+      0 6px 16px rgba(23, 46, 34, 0.04);
+  }
+
+  .lo-kicker {
+    @apply text-xs font-medium uppercase tracking-wider text-muted;
+  }
+
+  .lo-title {
+    @apply font-display text-3xl sm:text-4xl text-ink-strong tracking-tight font-medium;
+  }
+
+  .lo-lede {
+    @apply text-base sm:text-lg text-muted max-w-lg mx-auto leading-relaxed;
+  }
+
+  .lo-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 w-full min-h-11 py-3 px-6 bg-forest hover:bg-forest-deep disabled:bg-forest-disabled text-canvas font-medium text-sm rounded-sm cursor-pointer disabled:cursor-not-allowed;
+  }
+
+  .lo-btn-secondary {
+    @apply inline-flex items-center justify-center w-full min-h-11 py-2.5 px-4 text-sm font-medium text-muted hover:text-ink-strong hover:bg-sage rounded-sm cursor-pointer disabled:opacity-50;
+  }
+
+  .lo-choice {
+    @apply w-full text-left p-4 bg-canvas hover:bg-sage border border-line rounded-sm cursor-pointer;
+  }
+}
