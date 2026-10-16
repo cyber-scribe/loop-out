@@ -1,4 +1,4 @@
-# LoopOut
+# LoopOut: A 5-Minute Offline Activity to Break the Screen Loop
 
 LoopOut helps people step away from screens with one personalized, five-minute offline activity. Share how a screen session feels, choose an environment or activity preference if useful, then take a short break without a timer, account, or streak.
 
